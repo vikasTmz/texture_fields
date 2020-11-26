@@ -76,7 +76,6 @@ class Shapes3dClassDataset(data.Dataset):
                 models = f.read().split('\n')
 
         models = list(filter(None, models))
-        print("models ", models)
         # self.models = list(filter(self.test_model_complete, models))
         self.models = models
 
@@ -101,7 +100,6 @@ class Shapes3dClassDataset(data.Dataset):
         for field_name, field in self.fields.items():
             try:
                 assert len(field_name) > 0
-                print("field_name = ", field_name, field)
                 field_data = field.load(model_path, idx)
             except Exception:
                 if self.no_except:
