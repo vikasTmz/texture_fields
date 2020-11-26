@@ -34,7 +34,7 @@ model:
   z_dim: 512
   c_dim: 512
   white_bg: True
-  model_url:
+  model_url: out/singleview/car/model_best.pt
 generation:
   batch_size: 1
 test:
