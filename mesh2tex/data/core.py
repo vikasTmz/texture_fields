@@ -98,7 +98,7 @@ class Shapes3dClassDataset(data.Dataset):
         data = {}
         for field_name, field in self.fields.items():
             try:
-                print("self.models/ field_name = ", self.models, field_name)
+                assert len(field_name) > 0
                 field_data = field.load(model_path, idx)
             except Exception:
                 if self.no_except:

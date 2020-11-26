@@ -154,11 +154,8 @@ class DepthImageVisualizeField(Field):
         self.imageio_kwargs = dict()
 
     def load(self, model_path, idx):
-        print("model_path : ", model_path, idx)
         folder_img = os.path.join(model_path, self.folder_name_img)
-        print("folder_img : ", folder_img, os.path.join(folder_img, '*.%s' % self.extension_img))
         files_img = glob.glob(os.path.join(folder_img, '*.%s' % self.extension_img))
-        print("files_img : ", files_img)
         files_img.sort()
         folder_depth = os.path.join(model_path, self.folder_name_depth)
         files_depth = glob.glob(os.path.join(folder_depth, '*.%s' % self.extension_depth))
