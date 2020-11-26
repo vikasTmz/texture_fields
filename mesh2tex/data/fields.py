@@ -156,7 +156,7 @@ class DepthImageVisualizeField(Field):
     def load(self, model_path, idx):
         print("model_path : ", model_path)
         folder_img = os.path.join(model_path, self.folder_name_img)
-        print("folder_img : ", folder_img)
+        print("folder_img : ", folder_img, os.path.join(folder_img, '*.%s' % self.extension_img))
         files_img = glob.glob(os.path.join(folder_img, '*.%s' % self.extension_img))
         print("files_img : ", files_img)
         files_img.sort()
