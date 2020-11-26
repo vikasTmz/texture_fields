@@ -1,2 +1,4 @@
 data/synthetic_combined
 data/shapenet
+/data
+/out
