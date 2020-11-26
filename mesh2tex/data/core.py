@@ -75,6 +75,7 @@ class Shapes3dClassDataset(data.Dataset):
             with open(split_file, 'r') as f:
                 models = f.read().split('\n')
 
+        models = list(filter(None, models))
         print("models ", models)
         # self.models = list(filter(self.test_model_complete, models))
         self.models = models
