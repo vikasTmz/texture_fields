@@ -336,6 +336,7 @@ class Trainer(BaseTrainer):
         # determine constants
         batch_size = depth.size(0)
         num_views = depth.size(1)
+
         assert(num_views == 5)
 
         mesh_points = mesh_repr['points']

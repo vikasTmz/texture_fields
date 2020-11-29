@@ -58,10 +58,8 @@ class ImagesField(Field):
 
     def load(self, model_path, idx):
         folder = os.path.join(model_path, self.folder_name)
-        print("folder = ", folder, os.path.join(folder, '*.%s' % self.extension))
         files = glob.glob(os.path.join(folder, '*.%s' % self.extension))
         files.sort()
-        print("len_files = ", len(files))
         if self.random_view:
             idx_img = random.randint(0, len(files)-1)
         else:
