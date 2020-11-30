@@ -5,7 +5,7 @@ data:
   img_size: 128
 training:
   out_dir: 'out/singleview/chair'
-  batch_size: 18
+  batch_size: 1
   model_selection_metric: loss_val
   model_selection_mode: minimize
   print_every: 100
@@ -17,7 +17,7 @@ training:
   pc_subsampling: 2048
   vis_fixviews: True
   weight_pixelloss: 1.
-  weight_ganloss: 0.
+  weight_ganloss: 1.
   experiment: 'conditional'
   gradient_penalties_reg: 0.
 model:
