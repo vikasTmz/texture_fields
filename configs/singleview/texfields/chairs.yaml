@@ -17,7 +17,7 @@ training:
   pc_subsampling: 2048
   vis_fixviews: True
   weight_pixelloss: 1.
-  weight_ganloss: 1.
+  weight_ganloss: 0.
   experiment: 'conditional'
   gradient_penalties_reg: 0.
 model:
