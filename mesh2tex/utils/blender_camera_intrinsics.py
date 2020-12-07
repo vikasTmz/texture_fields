@@ -189,9 +189,11 @@ for v in C.object.data.vertices:
 
 normals = []
 for v in C.object.data.vertices:
-    norm = v.normal
+    mx_inv = C.object.matrix_world.inverted()
+    mx_norm = mx_inv.transposed().to_3x3()
+    norm =  v.normal
     normals.append(list(norm))
 
 pointcloud["points"] = points
 pointcloud["normals"] = normals
-np.savez(PATH+'pointcloud.npz', **pointcloud)
+np.savez(PATH+'cc067578ad92517bbe25370c898e25a5\\pointcloud.npz', **pointcloud)
