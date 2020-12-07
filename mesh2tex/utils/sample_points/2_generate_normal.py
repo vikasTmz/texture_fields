@@ -78,8 +78,8 @@ def generate_normal(pt_position, face_pts, face_axis):
 	return np.hstack((pt_position, pt_normal))
 
 if __name__ == '__main__':
-    vert_path = '1a0bc9ab92c915167ae33d942430658c/model.xyz'
-    mesh_path = '1a0bc9ab92c915167ae33d942430658c/model.obj'
+    vert_path = 'model.xyz'
+    mesh_path = 'model.obj'
     
     face_pts, face_axis = readFaceInfo(mesh_path)
     vert = np.loadtxt(vert_path)
