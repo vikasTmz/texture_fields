@@ -165,20 +165,19 @@ for num in range(0,10):
     # cam_dict["camera_mat_"+num] = K_
     # cam_dict["world_mat_"+num] = RT
     # np.savez(PATH+'depth\\cameras.npz', **cam_dict)
-    # bpy.context.scene.node_tree.nodes["File Output"].base_path = PATH+'visualize\\depth'
+    bpy.context.scene.node_tree.nodes["File Output"].base_path = PATH+'depth'
     bpy.context.scene.node_tree.nodes["File Output.001"].base_path = PATH+'image'
     bpy.ops.render.render()
-    # os.rename(PATH + 'visualize\\depth' + '\\depth0001.exr ',  PATH + 'visualize\\depth' + '\\00' + num + '.exr')
+    os.rename(PATH + 'depth' + '\\depth0001.exr ',  PATH + 'depth' + '\\00' + num + '.exr')
     os.rename(PATH + 'image' + '\\image0001.png ', PATH + 'image' + '\\00' + num + '.png')
 
-for num in range(0,1):
+for num in range(0,24):
     num = str(num)
     sample_loc = sample_hemisphere()
-    cam.location = sample_loc
+    cam.location = [i/3.5 for i in sample_loc]
     bpy.context.scene.node_tree.nodes["File Output.001"].base_path = PATH+'input_image'
     bpy.ops.render.render()
     os.rename(PATH + 'input_image' + '\\image0001.jpg ', PATH + 'input_image' + '\\00' + num + '.jpg')
-    # os.system('convert ' + PATH + 'input_image' + '\\00' + num + '.png ' + PATH + 'input_image' + '\\00' + num + '.jpg')
 
 pointcloud = {"points":[],"normals":[]}
 C = bpy.context
