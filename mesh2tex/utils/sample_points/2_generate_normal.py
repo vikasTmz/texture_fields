@@ -41,7 +41,6 @@ def readFaceInfo(obj_path):
 				f_y = np.cross(v1, f_n)		# y axis
 				new_axis = np.array([unit(v1), unit(f_y), unit(f_n)])
 				face_axis = np.append(face_axis, new_axis.reshape((1,3,3)), axis=0)
-			print(line)
 
 	face_pts = np.delete(face_pts, 0, 0)
 	face_axis = np.delete(face_axis, 0, 0)
@@ -76,6 +75,10 @@ def generate_normal(pt_position, face_pts, face_axis):
 				if len(hull.vertices) == 3:
 					pt_normal[idx] = f_n * (-1)
 	
+	pointcloud = {"points":[],"normals":[]}
+	pointcloud["points"] = pt_position
+	pointcloud["normals"] = pt_normal
+	np.savez('pointcloud.npz', **pointcloud)
 	return np.hstack((pt_position, pt_normal))
 
 if __name__ == '__main__':
