@@ -41,6 +41,7 @@ def readFaceInfo(obj_path):
 				f_y = np.cross(v1, f_n)		# y axis
 				new_axis = np.array([unit(v1), unit(f_y), unit(f_n)])
 				face_axis = np.append(face_axis, new_axis.reshape((1,3,3)), axis=0)
+			print(line)
 
 	face_pts = np.delete(face_pts, 0, 0)
 	face_axis = np.delete(face_axis, 0, 0)
@@ -83,5 +84,6 @@ if __name__ == '__main__':
     
     face_pts, face_axis = readFaceInfo(mesh_path)
     vert = np.loadtxt(vert_path)
+    print("done reading...")
     vert_with_normal = generate_normal(vert, face_pts, face_axis)
     np.savetxt(vert_path.replace('.xyz', '_normal.xyz'), vert_with_normal)
