@@ -162,7 +162,11 @@ class TextureNetwork(nn.Module):
                 color at given 3d locations
         """
         rgb = self.decoder(loc3d, c, z)
-        print(" LOC SHAPE, RGB SHAPE ==== ",loc3d.shape, rgb.shape)
+        f = open('output_color_ptcloud.obj')
+        for i in range(0, loc3d.shape[-1]):
+            f.write('v ' + str(loc3d[0,0,i]) + ' ' + str(loc3d[0,1,i]) + ' ' + str(loc3d[0,2,i]) + \
+             str(rgb[0,0,i]) + ' ' + str(rgb[0,1,i]) + ' ' + str(rgb[0,2,i]) + '\n')
+        f.close()
         return rgb
 
     def depth_map_to_3d(self, depth, cam_K, cam_W):
