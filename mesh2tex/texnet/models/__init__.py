@@ -163,8 +163,8 @@ class TextureNetwork(nn.Module):
         """
         rgb = self.decoder(loc3d, c, z)
         f = open('output_color_ptcloud.obj','w')
-        loc3d_numpy = loc3d.numpy()
-        rgb_numpy = rgb.numpy()
+        loc3d_numpy = loc3d.cpu().detach().numpy() 
+        rgb_numpy = rgb.cpu().detach().numpy() 
         print(loc3d.shape)
         for i in range(0, loc3d.shape[-1]):
             print(i)
