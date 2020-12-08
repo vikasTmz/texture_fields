@@ -162,6 +162,7 @@ class TextureNetwork(nn.Module):
                 color at given 3d locations
         """
         rgb = self.decoder(loc3d, c, z)
+        print(" LOC SHAPE, RGB SHAPE ==== ",loc3d.shape, rgb.shape)
         return rgb
 
     def depth_map_to_3d(self, depth, cam_K, cam_W):
