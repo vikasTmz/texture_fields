@@ -9,6 +9,10 @@ import scipy.linalg as linalg
 import math
 import cv2
 import os
+import random
+import string
+
+import torch
 
 def rotate_mat(axis, radian):
     rot_matrix = linalg.expm(np.cross(np.eye(3), axis / linalg.norm(axis) * radian))
@@ -75,7 +79,7 @@ def depth_to_point(depth, cam_K, cam_W, save_dir):
 
         o3d.io.write_point_cloud(os.path.join(save_dir, "reproject_pcd_world.ply"), pcd)
 
-def depth_map_to_3d(depth, cam_K, cam_W):
+def depth_map_to_3d_torch(depth, cam_K, cam_W):
     """Derive 3D locations of each pixel of a depth map.
 
     Args:
@@ -91,18 +95,19 @@ def depth_map_to_3d(depth, cam_K, cam_W):
         mask (torch.FloatTensor):  tensor of size B x 1 x N x M with
             a binary mask if the given pixel is present or not
     """
-   
-    assert(depth.size(1) == 1)
-    batch_size, _, N, M = depth.size()
+    depth = torch.from_numpy(depth)
+    cam_K = torch.from_numpy(cam_K)
+    cam_W = torch.from_numpy(cam_W)
+
+    N, M = depth.size()
     device = depth.device
     # Turn depth around. This also avoids problems with inplace operations
-    depth = -depth .permute(0, 1, 3, 2)
-    
-    zero_one_row = torch.tensor([[0., 0., 0., 1.]])
-    zero_one_row = zero_one_row.expand(batch_size, 1, 4).to(device)
+    depth = -depth.permute(1,0)
 
+    zero_one_row = torch.tensor([[0., 0., 0., 1.]])
+    zero_one_row = zero_one_row.expand(1, 4).to(device)
     # add row to world mat
-    cam_W = torch.cat((cam_W, zero_one_row), dim=1)
+    cam_W = torch.cat((cam_W, zero_one_row), dim=0)
 
     # clean depth image for mask
     mask = (depth.abs() != float("Inf")).float()
@@ -110,72 +115,91 @@ def depth_map_to_3d(depth, cam_K, cam_W):
     depth[depth == -1*float("Inf")] = 0
 
     # 4d array to 2d array k=N*M
-    d = depth.reshape(batch_size, 1, N * M)
+    d = depth.reshape(1,N * M)
 
     # create pixel location tensor
     px, py = torch.meshgrid([torch.arange(0, N), torch.arange(0, M)])
     px, py = px.to(device), py.to(device)
 
     p = torch.cat((
-        px.expand(batch_size, 1, px.size(0), px.size(1)), 
-        (M - py).expand(batch_size, 1, py.size(0), py.size(1))
-    ), dim=1)
-    p = p.reshape(batch_size, 2, py.size(0) * py.size(1))
-    p = (p.float() / M * 2)      
+        px.expand(px.size(0), px.size(1)), 
+        (M - py).expand(py.size(0), py.size(1))
+    ), dim=0)
+    p = p.reshape(2, py.size(0) * py.size(1))
+    p = (p.float() / M * 2)
     
     # create terms of mapping equation x = P^-1 * d*(qp - b)
-    P = cam_K[:, :2, :2].float().to(device)    
-    q = cam_K[:, 2:3, 2:3].float().to(device)   
-    b = cam_K[:, :2, 2:3].expand(batch_size, 2, d.size(2)).to(device)
+    P = cam_K[:2, :2].float().to(device)    
+    q = cam_K[2:3, 2:3].float().to(device)   
+    b = cam_K[:2, 2:3].expand(2, d.size(1)).to(device)
     Inv_P = torch.inverse(P).to(device)   
 
     rightside = (p.float() * q.float() - b.float()) * d.float()
-    x_xy = torch.bmm(Inv_P, rightside)
+    x_xy = torch.matmul(Inv_P, rightside)
     
     # add depth and ones to location in world coord system
-    x_world = torch.cat((x_xy, d, torch.ones_like(d)), dim=1)
+    x_world = torch.cat((x_xy, d, torch.ones_like(d)), dim=0)
 
     # derive loactoion in object coord via loc3d = W^-1 * x_world
     Inv_W = torch.inverse(cam_W)
-    loc3d = torch.bmm(
-        Inv_W.expand(batch_size, 4, 4),
-        x_world
-    ).reshape(batch_size, 4, N, M)
+    Inv_W_exp = Inv_W.expand(4, 4)
+    loc3d = torch.matmul(Inv_W_exp, x_world.double())
+    loc3d = loc3d.reshape(4, N, M)
 
-    loc3d = loc3d[:, :3].to(device)
+    loc3d = loc3d[:3,:,:].to(device)
     mask = mask.to(device)
+    loc3d = loc3d.view(3, N * M)
     return loc3d, mask
+
+
+def old_depth23d():
+    # Inv_W = np.linalg.inv(cam_W)
+
+    R = cam_W[0:3,0:3]
+    t = cam_W[0:3,3]
+    r = R_.from_matrix(R)
+
+    # compute transformation matrix (R, t)
+    # x_angle, z_angle, y_angle = r.as_euler('xyz', degrees=True)  # xyz ->xzy
+    # rot_mat_x = euler2rotmat(90-x_angle, axis='x')
+    # rot_mat_z = euler2rotmat(z_angle, axis='z')
+    # rot_mat_y = euler2rotmat(-y_angle, axis='y')
+    # dist = np.sqrt(np.square(t[0]) + np.square(t[1]) + np.square(t[2]))
+    # R = np.dot(rot_mat_x, rot_mat_y)
+    # t = np.array([0,0,dist])
+    # t = t.reshape(3, 1)
+    # cam_W = np.concatenate((R, t), axis=1)
+
+    # save_dir = PATH
+    # if not os.path.exists(save_dir): os.makedirs(save_dir)
+
+    # depth_to_point(depth,cam_K, cam_W, save_dir)
 
 PATH = "../../test_data/cc067578ad92517bbe25370c898e25a5"
 
-depth = cv2.imread(PATH + '/visualize/depth/001.exr', -1)
-depth = np.array(depth[:,:,0])
 
-# cam_k and cam_W both obationed from blender
-camera_param = np.load(PATH + '/visualize/depth/cameras.npz')
+# filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(7))
+filename = "depth_3d"
+f = open(filename + '.obj','w')
 
-cam_K = camera_param["camera_mat_1"]
-cam_W = camera_param["world_mat_1"]
+for j in range(1,2):
+    depth = cv2.imread(PATH + '/visualize/depth/00' + str(j) + '.exr', -1)
+    rgb = cv2.imread(PATH + '/visualize/image/00' + str(j) + '.png')
+    size = rgb.shape[0]
+    depth = np.array(depth[:,:,0])
 
-# Inv_W = np.linalg.inv(cam_W)
+    # cam_k and cam_W both obationed from blender
+    camera_param = np.load(PATH + '/visualize/depth/cameras.npz')
 
-R = cam_W[0:3,0:3]
-t = cam_W[0:3,3]
-r = R_.from_matrix(R)
+    cam_K = camera_param["camera_mat_"+str(j)]
+    cam_W = camera_param["world_mat_"+str(j)]
 
-# compute transformation matrix (R, t)
-x_angle, z_angle, y_angle = r.as_euler('xyz', degrees=True)  # xyz ->xzy
-rot_mat_x = euler2rotmat(90-x_angle, axis='x')
-rot_mat_z = euler2rotmat(z_angle, axis='z')
-rot_mat_y = euler2rotmat(-y_angle, axis='y')
-dist = np.sqrt(np.square(t[0]) + np.square(t[1]) + np.square(t[2]))
-R = np.dot(rot_mat_x, rot_mat_y)
-t = np.array([0,0,dist])
-t = t.reshape(3, 1)
-cam_W = np.concatenate((R, t), axis=1)
+    loc3d, mask = depth_map_to_3d_torch(depth, cam_K, cam_W)
+    loc3d_numpy = loc3d.cpu().detach().numpy() 
 
-save_dir = PATH
-if not os.path.exists(save_dir): os.makedirs(save_dir)
+    for i in range(0, loc3d.shape[-1]):
+        f.write('v ' + str(loc3d_numpy[0,i]) + ' ' + str(loc3d_numpy[1,i]) + ' ' + str(loc3d_numpy[2,i]) + \
+         ' ' + str(rgb[i%size,i//size,0]) + ' ' + str(rgb[i%size,i//size,1]) + ' ' + str(rgb[i%size,i//size,2]) + '\n')
 
-# depth_to_point(depth,cam_K, cam_W, save_dir)
-depth_map_to_3d
+
+f.close()

@@ -164,16 +164,16 @@ class TextureNetwork(nn.Module):
                 color at given 3d locations
         """
         rgb = self.decoder(loc3d, c, z)
-        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(7))
-        f = open(filename + '.obj','w')
-        loc3d_numpy = loc3d.cpu().detach().numpy() 
-        rgb_numpy = rgb.cpu().detach().numpy() 
-        print(loc3d.shape)
-        for i in range(0, loc3d.shape[-1]):
-            print(i)
-            f.write('v ' + str(loc3d_numpy[0,0,i]) + ' ' + str(loc3d_numpy[0,1,i]) + ' ' + str(loc3d_numpy[0,2,i]) + \
-             str(rgb_numpy[0,0,i]) + ' ' + str(rgb_numpy[0,1,i]) + ' ' + str(rgb_numpy[0,2,i]) + '\n')
-        f.close()
+        # filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(7))
+        # f = open(filename + '.obj','w')
+        # loc3d_numpy = loc3d.cpu().detach().numpy() 
+        # rgb_numpy = rgb.cpu().detach().numpy() 
+        # print(loc3d.shape)
+        # for i in range(0, loc3d.shape[-1]):
+        #     print(i)
+        #     f.write('v ' + str(loc3d_numpy[0,0,i]) + ' ' + str(loc3d_numpy[0,1,i]) + ' ' + str(loc3d_numpy[0,2,i]) + \
+        #      ' ' + str(rgb_numpy[0,0,i]) + ' ' + str(rgb_numpy[0,1,i]) + ' ' + str(rgb_numpy[0,2,i]) + '\n')
+        # f.close()
         return rgb
 
     def depth_map_to_3d(self, depth, cam_K, cam_W):
