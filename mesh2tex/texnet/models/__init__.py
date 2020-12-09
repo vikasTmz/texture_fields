@@ -164,7 +164,7 @@ class TextureNetwork(nn.Module):
                 color at given 3d locations
         """
         rgb = self.decoder(loc3d, c, z)
-        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
+        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(7))
         f = open(filename + '.obj','w')
         loc3d_numpy = loc3d.cpu().detach().numpy() 
         rgb_numpy = rgb.cpu().detach().numpy() 
