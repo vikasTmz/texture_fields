@@ -2,6 +2,8 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from torch import distributions as dist
+import random
+import string
 import trimesh
 from mesh2tex.texnet.models import (
     image_encoder, decoder, discriminator, vae_encoder
@@ -162,7 +164,8 @@ class TextureNetwork(nn.Module):
                 color at given 3d locations
         """
         rgb = self.decoder(loc3d, c, z)
-        f = open('output_color_ptcloud.obj','w')
+        filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(N))
+        f = open(filename + '.obj','w')
         loc3d_numpy = loc3d.cpu().detach().numpy() 
         rgb_numpy = rgb.cpu().detach().numpy() 
         print(loc3d.shape)
