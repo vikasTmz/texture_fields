@@ -182,7 +182,7 @@ PATH = "../../test_data/cc067578ad92517bbe25370c898e25a5"
 filename = "depth_3d"
 f = open(filename + '.obj','w')
 
-for j in range(1,2):
+for j in range(0,5):
     depth = cv2.imread(PATH + '/visualize/depth/00' + str(j) + '.exr', -1)
     rgb = cv2.imread(PATH + '/visualize/image/00' + str(j) + '.png')
     size = rgb.shape[0]
@@ -199,7 +199,7 @@ for j in range(1,2):
 
     for i in range(0, loc3d.shape[-1]):
         f.write('v ' + str(loc3d_numpy[0,i]) + ' ' + str(loc3d_numpy[1,i]) + ' ' + str(loc3d_numpy[2,i]) + \
-         ' ' + str(rgb[i%size,i//size,0]) + ' ' + str(rgb[i%size,i//size,1]) + ' ' + str(rgb[i%size,i//size,2]) + '\n')
+         ' ' + str(rgb[i%size,i//size,2]) + ' ' + str(rgb[i%size,i//size,1]) + ' ' + str(rgb[i%size,i//size,0]) + '\n')
 
 
 f.close()
