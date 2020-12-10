@@ -19,6 +19,8 @@ training:
   weight_pixelloss: 1.
   weight_ganloss: 0.
   experiment: 'conditional'
+  lr_g: 0.0001
+  lr_d: 0.0001
   gradient_penalties_reg: 0.
 model:
   decoder: each_layer_c_larger
@@ -31,6 +33,7 @@ model:
   geometry_encoder_kwargs: {}
   generator_bg_kwargs: {}
   discriminator_kwargs: {}
+  vae_encoder:
   z_dim: 512
   c_dim: 512
   white_bg: True
