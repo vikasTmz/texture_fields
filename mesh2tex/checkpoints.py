@@ -45,6 +45,7 @@ class CheckpointIO(object):
         print('=> Loading checkpoint from url...')
         out_dict = model_zoo.load_url(url, progress=True)
         filename = os.path.join(self.checkpoint_dir, 'model.pt')
+        print(filename)
         out_file_dict = torch.load(filename)
 
         print(out_file_dict["model_g"]["geometry_encoder.fc_pos.weight"].size(), out_dict["model"]["encoder.fc_pos.weight"].size())
