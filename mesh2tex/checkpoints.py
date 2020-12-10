@@ -19,6 +19,9 @@ class CheckpointIO(object):
         filename = os.path.join(self.checkpoint_dir, filename)
 
         outdict = kwargs
+        print(outdict["model_g"]["geometry_encoder.fc_pos.weight"].size())
+        print(outdict["model_g"]["geometry_encoder.block_0.fc_0.weight"].size())
+
         for k, v in self.module_dict.items():
             outdict[k] = v.state_dict()
         torch.save(outdict, filename)
@@ -29,7 +32,6 @@ class CheckpointIO(object):
         Args:
             filename (str): name of saved module dictionary
         '''
-        print(filename)
         if is_url(filename):
             return self.load_url(filename)
         else:
@@ -41,7 +43,6 @@ class CheckpointIO(object):
         Args:
             url (str): url to saved model
         '''
-        print(url)
         print('=> Loading checkpoint from url...')
         out_dict = model_zoo.load_url(url, progress=True)
         filename = os.path.join(self.checkpoint_dir, 'model.pt')
