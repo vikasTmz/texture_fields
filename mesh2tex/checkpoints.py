@@ -19,8 +19,6 @@ class CheckpointIO(object):
         filename = os.path.join(self.checkpoint_dir, filename)
 
         outdict = kwargs
-        print(outdict["model_g"]["geometry_encoder.fc_pos.weight"].size())
-        print(outdict["model_g"]["geometry_encoder.block_0.fc_0.weight"].size())
 
         for k, v in self.module_dict.items():
             outdict[k] = v.state_dict()
@@ -49,41 +47,41 @@ class CheckpointIO(object):
         # print(filename)
         out_file_dict = torch.load(filename)
 
-        print(out_file_dict["model_g"]["geometry_encoder.fc_pos.weight"].size(), out_dict["model"]["encoder.fc_pos.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.fc_pos.bias"].size(), out_dict["model"]["encoder.fc_pos.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_0.fc_0.weight"].size(), out_dict["model"]["encoder.block_0.fc_0.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_0.fc_0.bias"].size(), out_dict["model"]["encoder.block_0.fc_0.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_0.fc_1.weight"].size(), out_dict["model"]["encoder.block_0.fc_1.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_0.fc_1.bias"].size(), out_dict["model"]["encoder.block_0.fc_1.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_0.shortcut.weight"].size(), out_dict["model"]["encoder.block_0.shortcut.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_1.fc_0.weight"].size(), out_dict["model"]["encoder.block_1.fc_0.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_1.fc_0.bias"].size(), out_dict["model"]["encoder.block_1.fc_0.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_1.fc_1.weight"].size(), out_dict["model"]["encoder.block_1.fc_1.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_1.fc_1.bias"].size(), out_dict["model"]["encoder.block_1.fc_1.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_1.shortcut.weight"].size(), out_dict["model"]["encoder.block_1.shortcut.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_2.fc_0.weight"].size(), out_dict["model"]["encoder.block_2.fc_0.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_2.fc_0.bias"].size(), out_dict["model"]["encoder.block_2.fc_0.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_2.fc_1.weight"].size(), out_dict["model"]["encoder.block_2.fc_1.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_2.fc_1.bias"].size(), out_dict["model"]["encoder.block_2.fc_1.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_2.shortcut.weight"].size(), out_dict["model"]["encoder.block_2.shortcut.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_3.fc_0.weight"].size(), out_dict["model"]["encoder.block_3.fc_0.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_3.fc_0.bias"].size(), out_dict["model"]["encoder.block_3.fc_0.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_3.fc_1.weight"].size(), out_dict["model"]["encoder.block_3.fc_1.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_3.fc_1.bias"].size(), out_dict["model"]["encoder.block_3.fc_1.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_3.shortcut.weight"].size(), out_dict["model"]["encoder.block_3.shortcut.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_4.fc_0.weight"].size(), out_dict["model"]["encoder.block_4.fc_0.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_4.fc_0.bias"].size(), out_dict["model"]["encoder.block_4.fc_0.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_4.fc_1.weight"].size(), out_dict["model"]["encoder.block_4.fc_1.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_4.fc_1.bias"].size(), out_dict["model"]["encoder.block_4.fc_1.bias"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.block_4.shortcut.weight"].size(), out_dict["model"]["encoder.block_4.shortcut.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.fc_c.weight"].size(), out_dict["model"]["encoder.fc_c.weight"].size())
-        print(out_file_dict["model_g"]["geometry_encoder.fc_c.bias"].size(), out_dict["model"]["encoder.fc_c.bias"].size())
+        out_file_dict["model_g"]["geometry_encoder.fc_pos.weight"][:,:,0] = out_dict["model"]["encoder.fc_pos.weight"]
+        out_file_dict["model_g"]["geometry_encoder.fc_pos.bias"] = out_dict["model"]["encoder.fc_pos.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_0.fc_0.weight"][:,:,0] = out_dict["model"]["encoder.block_0.fc_0.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_0.fc_0.bias"] = out_dict["model"]["encoder.block_0.fc_0.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_0.fc_1.weight"][:,:,0] = out_dict["model"]["encoder.block_0.fc_1.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_0.fc_1.bias"] = out_dict["model"]["encoder.block_0.fc_1.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_0.shortcut.weight"][:,:,0] = out_dict["model"]["encoder.block_0.shortcut.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_1.fc_0.weight"][:,:,0] = out_dict["model"]["encoder.block_1.fc_0.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_1.fc_0.bias"] = out_dict["model"]["encoder.block_1.fc_0.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_1.fc_1.weight"][:,:,0] = out_dict["model"]["encoder.block_1.fc_1.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_1.fc_1.bias"] = out_dict["model"]["encoder.block_1.fc_1.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_1.shortcut.weight"][:,:,0] = out_dict["model"]["encoder.block_1.shortcut.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_2.fc_0.weight"][:,:,0] = out_dict["model"]["encoder.block_2.fc_0.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_2.fc_0.bias"] = out_dict["model"]["encoder.block_2.fc_0.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_2.fc_1.weight"][:,:,0] = out_dict["model"]["encoder.block_2.fc_1.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_2.fc_1.bias"] = out_dict["model"]["encoder.block_2.fc_1.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_2.shortcut.weight"][:,:,0] = out_dict["model"]["encoder.block_2.shortcut.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_3.fc_0.weight"][:,:,0] = out_dict["model"]["encoder.block_3.fc_0.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_3.fc_0.bias"] = out_dict["model"]["encoder.block_3.fc_0.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_3.fc_1.weight"][:,:,0] = out_dict["model"]["encoder.block_3.fc_1.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_3.fc_1.bias"] = out_dict["model"]["encoder.block_3.fc_1.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_3.shortcut.weight"][:,:,0] = out_dict["model"]["encoder.block_3.shortcut.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_4.fc_0.weight"][:,:,0] = out_dict["model"]["encoder.block_4.fc_0.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_4.fc_0.bias"] = out_dict["model"]["encoder.block_4.fc_0.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_4.fc_1.weight"][:,:,0] = out_dict["model"]["encoder.block_4.fc_1.weight"]
+        out_file_dict["model_g"]["geometry_encoder.block_4.fc_1.bias"] = out_dict["model"]["encoder.block_4.fc_1.bias"]
+        out_file_dict["model_g"]["geometry_encoder.block_4.shortcut.weight"][:,:,0] = out_dict["model"]["encoder.block_4.shortcut.weight"]
+        out_file_dict["model_g"]["geometry_encoder.fc_c.weight"] = out_dict["model"]["encoder.fc_c.weight"]
+        out_file_dict["model_g"]["geometry_encoder.fc_c.bias"] = out_dict["model"]["encoder.fc_c.bias"]
 
         # scalars = self.parse_state_dict(state_dict)
         for k, v in self.module_dict.items():
             print("Start loading: %s" % k)
             if k in out_file_dict:
-                # print(out_dict[k])
+                # out_dict[k])
                 v.load_state_dict(out_file_dict[k])
                 print("Finished: %s" % k)
             else:
@@ -102,7 +100,7 @@ class CheckpointIO(object):
             for k, v in self.module_dict.items():
                 print("Start loading: %s" % k)
                 if k in out_dict:
-                    # print(out_dict[k])
+                    # out_dict[k])
                     v.load_state_dict(out_dict[k])
                     print("Finished: %s" % k)
                 else:
