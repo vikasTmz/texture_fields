@@ -110,9 +110,11 @@ def depth_map_to_3d_torch(depth, cam_K, cam_W):
     cam_W = torch.cat((cam_W, zero_one_row), dim=0)
 
     # clean depth image for mask
-    mask = (depth.abs() != float("Inf")).float()
-    depth[depth == float("Inf")] = 0
-    depth[depth == -1*float("Inf")] = 0
+    # upperlimit =  1.e+10
+    upperlimit = float("Inf")
+    mask = (depth.abs() != upperlimit).float()
+    depth[depth == upperlimit] = 0
+    depth[depth == -1*upperlimit] = 0
 
     # 4d array to 2d array k=N*M
     d = depth.reshape(1,N * M)
@@ -175,21 +177,21 @@ def old_depth23d():
 
     # depth_to_point(depth,cam_K, cam_W, save_dir)
 
-PATH = "../../test_data/cc067578ad92517bbe25370c898e25a5"
+PATH = "../../test_data/34080e679c1ae08aca92a4cdad802b45"
 
 
 # filename = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(7))
 filename = "depth_3d"
 f = open(filename + '.obj','w')
 
-for j in range(0,5):
-    depth = cv2.imread(PATH + '/visualize/depth/00' + str(j) + '.exr', -1)
-    rgb = cv2.imread(PATH + '/visualize/image/00' + str(j) + '.png')
+for j in range(0,10):
+    depth = cv2.imread(PATH + '/depth/00' + str(j) + '.exr', -1)
+    rgb = cv2.imread(PATH + '/image/00' + str(j) + '.png')
     size = rgb.shape[0]
     depth = np.array(depth[:,:,0])
 
     # cam_k and cam_W both obationed from blender
-    camera_param = np.load(PATH + '/visualize/depth/cameras.npz')
+    camera_param = np.load(PATH + '/depth/cameras.npz')
 
     cam_K = camera_param["camera_mat_"+str(j)]
     cam_W = camera_param["world_mat_"+str(j)]
